@@ -26,7 +26,7 @@ const ArrowIcon = (props) => {
 export default ArrowIcon;
 
 const Container = styled.div`
-    ${props => props.hasSubMenu && "cursor: pointer"};
+    cursor: pointer;
 `;
 
 const RotateSVG = styled.svg`

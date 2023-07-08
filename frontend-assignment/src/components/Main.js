@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import Sidebar from './Sidebar';
+
 const Main = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const [dataList, setDataList ] = useState([]);
+    const [status, setStatus] = useState(404);
+    const [data, setData] = useState([]);
 
     const toggleModal = () => {
         setIsOpen(!isOpen);
@@ -12,6 +17,39 @@ const Main = () => {
         setIsOpen(false);
     }
     
+    const fetchAPI = () => {
+        axios.get('https://api.apis.guru/v2/providers.json')
+        .then(function (response) {
+            setStatus(response.status);
+            if(response.data.data){
+                // Set response data
+                setDataList(response.data.data);
+            }
+        })
+        .catch(function (error) {
+            // Handle the error
+            console.log(error);
+        });
+    };
+
+    const mapData = () => {
+        var newDataList = [];
+        dataList?.map((item) => {
+            newDataList.push({label: item});
+        })
+        setData(newDataList);
+    }
+
+    useEffect(() => {
+        fetchAPI();
+    }, []);
+
+    useEffect(() => {
+        if(status===200){
+            mapData();
+        }
+    }, [status]);
+
     return (
         <MainContainer>
             <ButtonWrapper onClick={toggleModal}>
@@ -22,7 +60,10 @@ const Main = () => {
                 isOpen={isOpen}
                 onClick={onClose}
             />
-            <Sidebar isOpen={isOpen} />
+            <Sidebar 
+                isOpen={isOpen} 
+                data={data}    
+            />
         </MainContainer>
     );
 }

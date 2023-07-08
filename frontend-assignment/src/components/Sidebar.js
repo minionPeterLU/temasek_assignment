@@ -1,44 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import SidebarItem from "./SidebarItem";
-import AdobeIcon from "../icons/AdobeIcon";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Sidebar = (props) => {
-    const { isOpen = false } = props;
-
-    const menuItems = [
-        { label: '1forge.com' },
-        { label: '1password.com' },
-        { label: '1password.local' },
-        { label: '6-dot-authentiqio.appspot.com' },
-        { label: 'ably.io' },
-        { label: 'ably.net' },
-        { label: 'abstractapi.com' },
-        { label: 'adafruit.com' },
-        { 
-            label: 'adobe.com',
-            subMenu: [
-                {
-                    title: "Adobe Experience Manager (AEM) API",
-                    icon: <AdobeIcon />
-                }
-            ]
-        },
-        { label: 'adyen.com' },
-        { label: 'afterbanks.com' },
-        { label: 'agco-ats.com' },
-    ];
+    const { data, isOpen = false } = props;
+    // For offline testing purposes
+    // const mockMenuItems = [
+    //     { label: '1forge.com' },
+    //     { label: '1password.com' },
+    //     { label: '1password.local' },
+    //     { label: '6-dot-authentiqio.appspot.com' },
+    //     { label: 'ably.io' },
+    //     { label: 'ably.net' },
+    //     { label: 'abstractapi.com' },
+    //     { label: 'adafruit.com' },
+    //     { 
+    //         label: 'adobe.com',
+    //         subMenu: [
+    //             {
+    //                 title: "Adobe Experience Manager (AEM) API",
+    //                 icon: <AdobeIcon />
+    //             }
+    //         ]
+    //     },
+    //     { label: 'adyen.com' },
+    //     { label: 'afterbanks.com' },
+    //     { label: 'agco-ats.com' },
+    // ];
 
     return (
         <SideBarContainer className='sidebar' isOpen={isOpen}>  
             <SidebarHeader>
                 Select Provider
             </SidebarHeader>
-            <SidebarWrapper>
-                {menuItems.map((item, index) => (
-                    <SidebarItem item={item} index={index} />
-                ))}
-            </SidebarWrapper>
+            <InfiniteStyle dataLength={data.length} height="100%">
+                <SidebarWrapper>
+                    {data.map((item, index) => (
+                        <SidebarItem item={item} index={index} />
+                    ))}
+                </SidebarWrapper>
+            </InfiniteStyle>
         </SideBarContainer>
     );
 };
@@ -75,8 +77,12 @@ const SidebarHeader = styled.div`
 const SidebarWrapper = styled.div`
     flex-direction: column;
     width: 480px;
-    height: 758px;
+    height: 100%;
     padding: 12px;
     border-radius: 8px;
     gap: 10px;
+`;
+
+const InfiniteStyle = styled(InfiniteScroll)`
+    max-height: calc(100vh - 100px);
 `;
