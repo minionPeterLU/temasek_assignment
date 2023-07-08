@@ -7,18 +7,41 @@ const Main = () => {
     const toggleModal = () => {
         setIsOpen(!isOpen);
     };
-    console.log("Debug isOpen: ", isOpen);
+
+    const onClose = () => {
+        setIsOpen(false);
+    }
+    
     return (
         <MainContainer>
             <ButtonWrapper onClick={toggleModal}>
                 Explore web APIs
             </ButtonWrapper>
+            <BackgroundContainer 
+                className="background"
+                isOpen={isOpen}
+                onClick={onClose}
+            />
             <Sidebar isOpen={isOpen} />
         </MainContainer>
     );
 }
 
 export default Main;
+
+const BackgroundContainer = styled.div`
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #000000B2;
+    transform: translateX(${props => (props.isOpen ? "0%" : "100%")});
+    transition: transform 0.5s ease-out,
+    box-shadow ${props => (props.isOpen ? "0s" : "1s")} linear;
+    will-change: transform;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+`;
 
 const MainContainer = styled.div`
     background-color: #42607B;
