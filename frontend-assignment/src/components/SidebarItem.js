@@ -4,7 +4,7 @@ import ArrowIcon from '../icons/ArrowIcon';
 import axios from 'axios';
 
 const SidebarItem = (props) => {
-    const { item , index } = props;
+    const { item , index, handleOpenModal, mapModalData } = props;
     const [rotation, setRotation] = useState(0);
     const [ hasSubMenu, setHasSubMenu ] = useState(false);
     const [ subMenu, setSubMenu ] = useState({});
@@ -39,6 +39,10 @@ const SidebarItem = (props) => {
         }
     }
 
+    const handleModelClick = () => {
+        handleOpenModal(true);
+    };
+
     useEffect(() => {
         if(rotation===180){
             fetchAPI();
@@ -52,34 +56,37 @@ const SidebarItem = (props) => {
                 url:data?.info["x-logo"].url,
                 title:data.info.title,
             });
+            mapModalData(data);
         }
     }, [status]);
 
     return (
-        <SideBarItemContainer 
-            key={index}
-            rotation={rotation}    
-        >
-            <SidebarItemTitleWrapper>
-                <SidebarItemTitle>
-                    {item.label}
-                </SidebarItemTitle>
-                <ArrowIcon 
-                    handleClick={handleClick}
-                    hasSubMenu={hasSubMenu} 
-                    rotation={rotation}
-                    onClick={toggle}
-                />
-            </SidebarItemTitleWrapper>
-            { hasSubMenu && rotation === 180 && (
-                <SidebarItemBodyWrapper active={active}>
-                    <SideBarItemWrapper>
-                        <SubItemImage src={subMenu.url} />
-                        <SubItemTitle>{subMenu.title}</SubItemTitle>
-                    </SideBarItemWrapper>
-                </SidebarItemBodyWrapper>
-            )}
-        </SideBarItemContainer>
+        <>
+            <SideBarItemContainer 
+                key={index}
+                rotation={rotation}    
+            >
+                <SidebarItemTitleWrapper>
+                    <SidebarItemTitle>
+                        {item.label}
+                    </SidebarItemTitle>
+                    <ArrowIcon 
+                        handleClick={handleClick}
+                        hasSubMenu={hasSubMenu} 
+                        rotation={rotation}
+                        onClick={toggle}
+                    />
+                </SidebarItemTitleWrapper>
+                { hasSubMenu && rotation === 180 && (
+                    <SidebarItemBodyWrapper active={active}>
+                        <SideBarItemWrapper onClick={handleModelClick}>
+                            <SubItemImage src={subMenu.url} />
+                            <SubItemTitle>{subMenu.title}</SubItemTitle>
+                        </SideBarItemWrapper>
+                    </SidebarItemBodyWrapper>
+                )}
+            </SideBarItemContainer>
+        </>
     );
 }
 
@@ -118,6 +125,7 @@ const SideBarItemWrapper = styled.div`
     line-height: 24px;
     letter-spacing: 0em;
     text-align: left;
+    cursor: pointer;
 `;
 
 const SidebarItemBodyWrapper = styled.div`

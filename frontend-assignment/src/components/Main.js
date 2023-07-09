@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Sidebar from './Sidebar';
+import SidebarItemModal from "./SidebarItemModal";
+import SidebarItemDetails from './SidebarItemDetails';
 
 const Main = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [dataList, setDataList ] = useState([]);
     const [status, setStatus] = useState(404);
     const [data, setData] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalData, setModalData] = useState(null);
 
     const toggleModal = () => {
         setIsOpen(!isOpen);
@@ -17,6 +21,18 @@ const Main = () => {
         setIsOpen(false);
     }
     
+    const handleOpenModal = (value) => {
+        setModalOpen(value);
+    };
+    
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const mapModalData = (data) => {
+        setModalData(data);
+    };
+
     const fetchAPI = () => {
         axios.get('https://api.apis.guru/v2/providers.json')
         .then(function (response) {
@@ -51,20 +67,33 @@ const Main = () => {
     }, [status]);
 
     return (
-        <MainContainer>
-            <ButtonWrapper onClick={toggleModal}>
-                Explore web APIs
-            </ButtonWrapper>
-            <BackgroundContainer 
-                className="background"
-                isOpen={isOpen}
-                onClick={onClose}
-            />
-            <Sidebar 
-                isOpen={isOpen} 
-                data={data}    
-            />
-        </MainContainer>
+        <>
+            <MainContainer>
+                <ButtonWrapper onClick={toggleModal}>
+                    Explore web APIs
+                </ButtonWrapper>
+                <BackgroundContainer 
+                    className="background"
+                    isOpen={isOpen}
+                    onClick={onClose}
+                />
+                <Sidebar 
+                    isOpen={isOpen} 
+                    data={data}
+                    handleOpenModal={handleOpenModal}
+                    mapModalData={mapModalData}
+                />
+            </MainContainer>
+            <SidebarItemModal 
+                isOpen={modalOpen} 
+                
+            >
+                <SidebarItemDetails
+                    modalData={modalData}
+                    onClose={handleCloseModal} 
+                />
+            </SidebarItemModal>
+        </>
     );
 }
 

@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import SidebarItem from "./SidebarItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Sidebar = (props) => {
-    const { data, isOpen = false } = props;
+    const { 
+        data, 
+        isOpen = false,
+        handleOpenModal,
+        mapModalData
+    } = props;
     // For offline testing purposes
     // const mockMenuItems = [
     //     { label: '1forge.com' },
@@ -37,7 +42,12 @@ const Sidebar = (props) => {
             <InfiniteStyle dataLength={data.length} height="100%">
                 <SidebarWrapper>
                     {data.map((item, index) => (
-                        <SidebarItem item={item} index={index} />
+                        <SidebarItem 
+                            item={item} 
+                            index={index} 
+                            handleOpenModal={handleOpenModal} 
+                            mapModalData={mapModalData}    
+                        />
                     ))}
                 </SidebarWrapper>
             </InfiniteStyle>
