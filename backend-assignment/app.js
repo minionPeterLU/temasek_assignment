@@ -6,7 +6,7 @@ const mysql = require('mysql2');
 
 const app = express();
 const port = 8000;
-const oneHrInMilSec = 36000000;
+const oneHrInMilSec = 3600000;
 const fait = "fait";
 const crypto = "crypto";
 
@@ -14,6 +14,7 @@ app.use(cors({
     origin: "*",
 }),bodyParser.json(),express());
 
+// Subject to personal mysql database server
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -78,6 +79,11 @@ async function loadDataFromDB(sqlQuery, currentTime, baseType){
     return output;
 }
 
+async function loadHistoricalDataFromDB(sqlQuery){
+    const result = await executeQuery(sqlQuery);
+    return result;
+}
+
 function storeDataIntoDB(sql, currency,timestamp, val_1, val_2, val_3) {
     connection.query(sql,[currency,timestamp,val_1,val_2,val_3], function (error) {
         if(error){  
@@ -88,6 +94,19 @@ function storeDataIntoDB(sql, currency,timestamp, val_1, val_2, val_3) {
     });
 }
 
+function mapHistoricalData(data,target_currency){
+    const output = []
+    if(data.length > 0){
+        data.map((item) => {
+            const outputObj = {}
+            outputObj.timestamp = item?.timestamp;
+            outputObj.value = item[target_currency];
+            output.push(outputObj);
+        });
+    }
+    return output;
+    
+}
 // Define a route for the POST API
 app.post('/rates', async (req, res) => {
     try {
@@ -152,6 +171,45 @@ app.post('/rates', async (req, res) => {
         } else {
             res.status(201).json("Invalid base value! Please use 'fiat' or 'crypto' only!");
         }
+    } catch(error) {
+        // Handle any errors that occur during the process
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Define a route for the GET API
+app.get('/historical-rates', async (req, res) => {
+    try { 
+        const inputData = req.body;
+        const fiat_currency = ["USD","SGD","EUR"];
+        const crypto_currency = ["BTC","DOGE","ETH"];
+        const base_currency = inputData?.base_currency;
+        const target_currency = inputData?.target_currency;
+        const startTime = inputData?.start;
+        let endTime = inputData?.end;
+        if(!endTime) {
+            endTime = new Date().getTime();
+        };
+
+        let sqlQuery = null;
+        if (fiat_currency.includes(base_currency)) {
+            sqlQuery = `SELECT fiat_currency as currency, fiat_timestamp as timestamp, btc_val as BTC, doge_val as DOGE, eth_val as ETH
+                        FROM fiat_exchange   
+                        WHERE fiat_timestamp >= ${startTime} 
+                        AND fiat_timestamp <= ${endTime}
+                        AND fiat_currency = '${base_currency}'`;
+        } else if (crypto_currency.includes(base_currency)) {
+            sqlQuery = `SELECT crypto_currency as currency, crypto_timestamp as timestamp, usd_val as USD, sgd_val as SGD, eur_val as EUR
+                        FROM crypto_exchange   
+                        WHERE crypto_timestamp >= ${startTime} 
+                        AND crypto_timestamp <= ${endTime}
+                        AND crypto_currency = '${base_currency}'`;
+        }
+        const result = await loadHistoricalDataFromDB(sqlQuery);
+        const output = {};
+        output.results = mapHistoricalData(result, target_currency);
+        res.status(201).json(output);
     } catch(error) {
         // Handle any errors that occur during the process
         console.error(error);
