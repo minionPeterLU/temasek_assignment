@@ -10,6 +10,7 @@ const Sidebar = (props) => {
         handleOpenModal,
         mapModalData
     } = props;
+
     // For offline testing purposes
     // const mockMenuItems = [
     //     { label: '1forge.com' },
@@ -95,4 +96,19 @@ const SidebarWrapper = styled.div`
 
 const InfiniteStyle = styled(InfiniteScroll)`
     max-height: calc(100vh - 100px);
+    overflow: auto;
+
+    /* Hide the default scroll bar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  
+    /* Customize the scroll bar appearance */
+    &::-webkit-scrollbar {
+      width: 0.5em;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: tranparency;
+      border-radius: 0.25em;
+    }
 `;

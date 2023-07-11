@@ -1,20 +1,22 @@
 import React from "react";
 import styled from 'styled-components';
 
-const SidebarItemModal = ({onClose, modalData}) => {
+const SidebarItemModal = ({ onClose, modalData }) => {
     const infoData = modalData?.info;
     const contactData = infoData?.contact;
     const handleClose = () => {
         onClose();
     };
 
-    return(
-        <>
-            <SidebarItemDetailWrapper>
+    return (
+        <SidebarItemDetailContainer>
+            <HeaderSection>
                 <HeaderWrapper>
                     <HeaderIcon src={infoData["x-logo"]?.url} />
                     <HeaderTitle>{infoData?.title}</HeaderTitle>
                 </HeaderWrapper>
+            </HeaderSection>
+            <BodySection>
                 <BodyWrapper>
                     <ContentWrapper>
                         <ContentTitle>
@@ -52,44 +54,43 @@ const SidebarItemModal = ({onClose, modalData}) => {
                         </ContactContentWrapper>
                     </ContentWrapper>
                 </BodyWrapper>
-            </SidebarItemDetailWrapper>
-            <ButtonWrapper onClick={handleClose}>
-                Explore web APIs
-            </ButtonWrapper>
-        </>
+            </BodySection>
+            <FooterSection>
+                <ButtonWrapper onClick={handleClose}>
+                    Explore web APIs
+                </ButtonWrapper>
+            </FooterSection>
+        </SidebarItemDetailContainer>
     );
 }
 
 export default SidebarItemModal;
 
-const SidebarItemDetailWrapper = styled.div`
+const SidebarItemDetailContainer = styled.div`
     position: fixed;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    width: 100%;
+    row-gap: 40px;
 `;
 
-const HeaderWrapper = styled.div`
-    position: fixed;
-    top: 50px;
-    left: calc(50%-355px);
-    width: 710px;
-    height: 120px;
-    padding: 18px 0px 18px 0px;
-    gap: 10px
-    font-size: 32px;
-    line-height: 39px;
-    letter-spacing: 0em;
-    text-align: left; 
+const HeaderSection = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
+    height: 156px;
+`;
+
+const HeaderWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    align-items: center;
 `;
 
 const HeaderIcon = styled.img`
     width: 120px;
     height: 120px;
-    padding-right: 10px;
 `;
 
 const HeaderTitle = styled.div`
@@ -97,17 +98,24 @@ const HeaderTitle = styled.div`
     line-height: 39px;
     margin-top: auto;
     margin-bottom: auto;
+    font-family: Inter;
+    text-align: left;
+    font-weight: 400;
+    width: 580px;
+`;
+
+const BodySection = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 463px;
 `;
 
 const BodyWrapper = styled.div`
-    position: fixed;
-    top: 256px;
-    left: calc(50%-600px);
-    width: 1200px;
-    height: 463px;
-    padding: 0px 120px 0px 120px;
     gap: 40px;
     text-align: center;
+    width: 1200px;
+
 `;
 
 const ContentTitle = styled.div`
@@ -149,9 +157,6 @@ const ContentItemTitle = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    position: fixed;
-    bottom: 50px;
-    left: calc(50%-103px);
     background-color: #00A1D4;
     border-color: none;
     border-radius: 8px;
@@ -165,4 +170,10 @@ const ButtonWrapper = styled.div`
     height: 29px;
     padding: 12px 16px 12px 16px;
     text-align: center;
+`;
+
+const FooterSection = styled.div`
+    display: flex;
+    flex-diection: row;
+    justify-content: center;
 `;

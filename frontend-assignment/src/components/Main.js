@@ -84,10 +84,7 @@ const Main = () => {
                     mapModalData={mapModalData}
                 />
             </MainContainer>
-            <SidebarItemModal 
-                isOpen={modalOpen} 
-                
-            >
+            <SidebarItemModal isOpen={modalOpen}>
                 <SidebarItemDetails
                     modalData={modalData}
                     onClose={handleCloseModal} 
